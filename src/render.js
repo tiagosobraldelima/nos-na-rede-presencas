@@ -288,20 +288,25 @@ export function renderStudentTable(students = [], pageSize = readTablePageSize()
     ? sortedStudents
     : sortedStudents.slice(0, pageSize);
 
-  target.innerHTML = visibleStudents.map((student) => `
+  target.innerHTML = visibleStudents.map((student) => {
+    const faltasBadge = student.faltas > 0 
+        ? `<span class="risk-badge">${formatNumber(student.faltas)}</span>` 
+        : `<strong>0</strong>`;
+    
+    return `
     <tr>
       <td class="col-nome"><strong>${escapeHtml(student.nome)}</strong></td>
       <td class="col-meta">${escapeHtml(student.turma)}</td>
       <td class="col-meta">${escapeHtml(student.municipio)}</td>
       <td class="col-meta">${escapeHtml(student.educador)}</td>
-      <td>${formatNumber(student.presencas)}</td>
-      <td>${formatNumber(student.faltas)}</td>
+      <td><strong>${formatNumber(student.presencas)}</strong></td>
+      <td>${faltasBadge}</td>
       <td>${formatNumber(student.dispensas)}</td>
-      <td>${formatNumber(student.periodosValidos)}</td>
-      <td>${formatPercent(student.percentualFrequencia)}</td>
+      <td><strong>${formatNumber(student.periodosValidos)}</strong></td>
+      <td><strong>${formatPercent(student.percentualFrequencia)}</strong></td>
       <td><span class="status-badge ${statusClass(student.situacao)}">${escapeHtml(student.situacao)}</span></td>
     </tr>
-  `).join('');
+  `}).join('');
 
   updateSortHeaders('main', currentSortMain.col, currentSortMain.asc);
 
