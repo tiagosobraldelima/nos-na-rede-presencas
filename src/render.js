@@ -12,6 +12,61 @@ const FILTER_IDS = {
 
 const TABLE_PAGE_SIZE_ID = 'tablePageSize';
 
+let currentSortRisk = { col: 'validos', asc: true };
+let currentSortMain = { col: 'situacao', asc: true };
+
+function sortData(data, col, asc) {
+  return [...data].sort((a, b) => {
+    let valA = a[col];
+    let valB = b[col];
+    
+    if (col === 'frequencia') {
+      valA = a.percentualFrequencia;
+      valB = b.percentualFrequencia;
+    } else if (col === 'validos') {
+      valA = a.periodosValidos;
+      valB = b.periodosValidos;
+    } else if (col === 'situacao') {
+      const statusPriority = {
+        [CERTIFICATION_STATUS.naoApto]: 0,
+        [CERTIFICATION_STATUS.acompanhamento]: 1,
+        [CERTIFICATION_STATUS.apto]: 2
+      };
+      valA = statusPriority[a.situacao] ?? 9;
+      valB = statusPriority[b.situacao] ?? 9;
+    }
+    
+    if (valA === valB) {
+      return String(a.nome).localeCompare(String(b.nome));
+    }
+    
+    if (typeof valA === 'string' && typeof valB === 'string') {
+      return asc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+    }
+    
+    return asc ? (valA > valB ? 1 : -1) : (valA < valB ? 1 : -1);
+  });
+}
+
+function updateSortHeaders(table, col, asc) {
+  document.querySelectorAll(`th.sortable[data-table="${table}"]`).forEach(th => {
+    th.classList.remove('active');
+    const icon = th.querySelector('i');
+    if (icon) {
+      icon.className = 'fa-solid fa-sort';
+    }
+  });
+  
+  const activeTh = document.querySelector(`th.sortable[data-table="${table}"][data-col="${col}"]`);
+  if (activeTh) {
+    activeTh.classList.add('active');
+    const icon = activeTh.querySelector('i');
+    if (icon) {
+      icon.className = asc ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down';
+    }
+  }
+}
+
 function element(id) {
   return document.getElementById(id);
 }
@@ -169,36 +224,35 @@ export function renderReportSummary(summary = {}) {
 }
 
 export function renderRiskList(students = []) {
-  const target = element('riskList');
+  const target = element('riskTable');
   if (!target) return;
 
   const riskStudents = students
     .filter((student) => (
       student.situacao === CERTIFICATION_STATUS.naoApto
       || String(student.observacao ?? '').startsWith('Risco alto')
-    ))
-    .sort((a, b) => (
-      (a.periodosValidos - b.periodosValidos)
-      || (b.faltas - a.faltas)
-      || String(a.nome).localeCompare(String(b.nome))
-    ))
-    .slice(0, 12);
+    ));
 
-  if (riskStudents.length === 0) {
-    target.innerHTML = '<p class="empty-state">Nenhum participante em risco nos filtros atuais.</p>';
+  const sortedRisk = sortData(riskStudents, currentSortRisk.col, currentSortRisk.asc).slice(0, 12);
+
+  if (sortedRisk.length === 0) {
+    target.innerHTML = '<tr><td colspan="7">Nenhum participante em risco nos filtros atuais.</td></tr>';
     return;
   }
 
-  target.innerHTML = riskStudents.map((student) => `
-    <article class="risk-item">
-      <div>
-        <strong>${escapeHtml(student.nome)}</strong>
-        <p>${escapeHtml(student.turma)} • ${escapeHtml(student.municipio)} • ${escapeHtml(student.educador)}</p>
-        <small>${escapeHtml(student.observacao)}</small>
-      </div>
-      <span class="badge badge-red">${formatNumber(student.periodosValidos)} válidos / ${formatNumber(student.faltas)} faltas</span>
-    </article>
+  target.innerHTML = sortedRisk.map((student) => `
+    <tr>
+      <td>${escapeHtml(student.nome)}</td>
+      <td>${escapeHtml(student.turma)}</td>
+      <td>${escapeHtml(student.municipio)}</td>
+      <td>${escapeHtml(student.educador)}</td>
+      <td>${formatNumber(student.periodosValidos)}</td>
+      <td>${formatNumber(student.faltas)}</td>
+      <td>${escapeHtml(student.observacao)}</td>
+    </tr>
   `).join('');
+  
+  updateSortHeaders('risk', currentSortRisk.col, currentSortRisk.asc);
 }
 
 export function readTablePageSize() {
@@ -221,17 +275,7 @@ export function renderStudentTable(students = [], pageSize = readTablePageSize()
     return;
   }
 
-  const statusPriority = {
-    [CERTIFICATION_STATUS.naoApto]: 0,
-    [CERTIFICATION_STATUS.acompanhamento]: 1,
-    [CERTIFICATION_STATUS.apto]: 2
-  };
-  const sortedStudents = [...students].sort((a, b) => (
-    (statusPriority[a.situacao] ?? 9) - (statusPriority[b.situacao] ?? 9)
-    || a.periodosValidos - b.periodosValidos
-    || b.faltas - a.faltas
-    || String(a.nome).localeCompare(String(b.nome))
-  ));
+  const sortedStudents = sortData(students, currentSortMain.col, currentSortMain.asc);
 
   const visibleStudents = pageSize === 'all'
     ? sortedStudents
@@ -251,6 +295,8 @@ export function renderStudentTable(students = [], pageSize = readTablePageSize()
       <td><span class="status-badge ${statusClass(student.situacao)}">${escapeHtml(student.situacao)}</span></td>
     </tr>
   `).join('');
+
+  updateSortHeaders('main', currentSortMain.col, currentSortMain.asc);
 
   const tableStatus = element('tableDisplayStatus');
   if (tableStatus) {
@@ -314,4 +360,29 @@ export function bindFilterEvents(callback) {
   if (tablePageSize) {
     tablePageSize.addEventListener('change', callback);
   }
+
+  document.querySelectorAll('th.sortable').forEach(th => {
+    th.addEventListener('click', () => {
+      const table = th.dataset.table;
+      const col = th.dataset.col;
+      
+      if (table === 'risk') {
+        if (currentSortRisk.col === col) {
+          currentSortRisk.asc = !currentSortRisk.asc;
+        } else {
+          currentSortRisk.col = col;
+          currentSortRisk.asc = true;
+        }
+      } else if (table === 'main') {
+        if (currentSortMain.col === col) {
+          currentSortMain.asc = !currentSortMain.asc;
+        } else {
+          currentSortMain.col = col;
+          currentSortMain.asc = true;
+        }
+      }
+      
+      callback();
+    });
+  });
 }

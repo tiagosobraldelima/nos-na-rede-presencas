@@ -676,54 +676,89 @@ th {
     letter-spacing: 0.055em;
 }
 
+th.sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 150ms ease;
+}
+
+th.sortable:hover {
+    background: rgba(51, 166, 217, 0.18);
+}
+
+th.sortable i {
+    margin-left: 0.35rem;
+    color: rgba(38, 51, 77, 0.4);
+    font-size: 0.9em;
+}
+
+th.sortable.active i {
+    color: var(--color-blue);
+}
+
 td {
     color: var(--color-muted);
     font-size: 0.86rem;
     line-height: 1.24;
 }
 
-th:nth-child(1),
-td:nth-child(1) {
+.table-panel th:nth-child(1),
+.table-panel td:nth-child(1) {
     width: 12%;
 }
 
-th:nth-child(2),
-td:nth-child(2) {
+.table-panel th:nth-child(2),
+.table-panel td:nth-child(2) {
     width: 16%;
 }
 
-th:nth-child(3),
-td:nth-child(3) {
+.table-panel th:nth-child(3),
+.table-panel td:nth-child(3) {
     width: 11%;
 }
 
-th:nth-child(4),
-td:nth-child(4) {
+.table-panel th:nth-child(4),
+.table-panel td:nth-child(4) {
     width: 15%;
 }
 
-th:nth-child(5),
-td:nth-child(5),
-th:nth-child(6),
-td:nth-child(6),
-th:nth-child(7),
-td:nth-child(7),
-th:nth-child(8),
-td:nth-child(8) {
+.table-panel th:nth-child(5),
+.table-panel td:nth-child(5),
+.table-panel th:nth-child(6),
+.table-panel td:nth-child(6),
+.table-panel th:nth-child(7),
+.table-panel td:nth-child(7),
+.table-panel th:nth-child(8),
+.table-panel td:nth-child(8) {
     width: 6%;
     text-align: center;
 }
 
-th:nth-child(9),
-td:nth-child(9) {
+.table-panel th:nth-child(9),
+.table-panel td:nth-child(9) {
     width: 8%;
     text-align: center;
 }
 
-th:nth-child(10),
-td:nth-child(10) {
+.table-panel th:nth-child(10),
+.table-panel td:nth-child(10) {
     width: 14%;
 }
+
+.risk-panel th:nth-child(1),
+.risk-panel td:nth-child(1) { width: 18%; }
+.risk-panel th:nth-child(2),
+.risk-panel td:nth-child(2) { width: 15%; }
+.risk-panel th:nth-child(3),
+.risk-panel td:nth-child(3) { width: 12%; }
+.risk-panel th:nth-child(4),
+.risk-panel td:nth-child(4) { width: 15%; }
+.risk-panel th:nth-child(5),
+.risk-panel td:nth-child(5),
+.risk-panel th:nth-child(6),
+.risk-panel td:nth-child(6) { width: 8%; text-align: center; }
+.risk-panel th:nth-child(7),
+.risk-panel td:nth-child(7) { width: 24%; }
 
 tbody tr:last-child td {
     border-bottom: 0;

@@ -171,8 +171,25 @@
                 e incluem resumo por turma.
             </p>
             <p id="riskReportStatus" class="download-status" aria-live="polite"></p>
-            <div id="riskList" class="risk-list">
-                <p class="empty-state">A lista será preenchida quando os dados forem processados.</p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="sortable" data-table="risk" data-col="nome">Nome <i class="fa-solid fa-sort"></i></th>
+                            <th class="sortable" data-table="risk" data-col="turma">Turma <i class="fa-solid fa-sort"></i></th>
+                            <th class="sortable" data-table="risk" data-col="municipio">Município <i class="fa-solid fa-sort"></i></th>
+                            <th class="sortable" data-table="risk" data-col="educador">Educador(a) <i class="fa-solid fa-sort"></i></th>
+                            <th class="sortable" data-table="risk" data-col="validos">Válidos <i class="fa-solid fa-sort"></i></th>
+                            <th class="sortable" data-table="risk" data-col="faltas">Faltas <i class="fa-solid fa-sort"></i></th>
+                            <th class="sortable" data-table="risk" data-col="observacao">Observação <i class="fa-solid fa-sort"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody id="riskTable">
+                        <tr>
+                            <td colspan="7">A lista será preenchida quando os dados forem processados.</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
@@ -245,16 +262,16 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Nome</th>
-                            <th>Turma</th>
-                            <th>Município</th>
-                            <th>Educador(a)</th>
-                            <th>Presenças</th>
-                            <th>Faltas</th>
-                            <th>Dispensas</th>
-                            <th>Válidos</th>
-                            <th>% frequência</th>
-                            <th>Situação</th>
+                            <th class="sortable" data-table="main" data-col="nome">Nome <i class="fa-solid fa-sort"></i></th>
+                            <th class="sortable" data-table="main" data-col="turma">Turma <i class="fa-solid fa-sort"></i></th>
+                            <th class="sortable" data-table="main" data-col="municipio">Município <i class="fa-solid fa-sort"></i></th>
+                            <th class="sortable" data-table="main" data-col="educador">Educador(a) <i class="fa-solid fa-sort"></i></th>
+                            <th class="sortable" data-table="main" data-col="presencas">Presenças <i class="fa-solid fa-sort"></i></th>
+                            <th class="sortable" data-table="main" data-col="faltas">Faltas <i class="fa-solid fa-sort"></i></th>
+                            <th class="sortable" data-table="main" data-col="dispensas">Dispensas <i class="fa-solid fa-sort"></i></th>
+                            <th class="sortable" data-table="main" data-col="validos">Válidos <i class="fa-solid fa-sort"></i></th>
+                            <th class="sortable" data-table="main" data-col="frequencia">% frequência <i class="fa-solid fa-sort"></i></th>
+                            <th class="sortable" data-table="main" data-col="situacao">Situação <i class="fa-solid fa-sort"></i></th>
                         </tr>
                     </thead>
                     <tbody id="studentTable">
@@ -270,14 +287,6 @@
     <footer class="site-footer">
         <div class="footer-content">
             <div class="footer-brand-section">
-                <img
-                    src="assets/nos-na-rede-logo.png"
-                    alt="Logo do Projeto Nós na Rede"
-                    class="footer-logo"
-                    width="120"
-                    height="45"
-                    loading="lazy"
-                >
                 <div class="footer-text">
                     <p class="footer-brand">Projeto Nós na Rede</p>
                     <p>
