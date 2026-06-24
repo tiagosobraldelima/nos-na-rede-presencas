@@ -427,15 +427,15 @@ select {
 
 .risk-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 0.85rem;
 }
 
 .risk-item {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
     padding: 1rem 1.25rem;
     background: rgba(255, 255, 255, 0.74);
     border: 1px solid var(--color-line);
