@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Presenças e Certificação - Nós na Rede</title>
+    <meta name="description" content="Dashboard institucional do Projeto Nós na Rede para acompanhamento de presenças, faltas e certificação dos cursistas nos encontros presenciais.">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="apple-touch-icon" href="assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&family=Slackey&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-shapes" aria-hidden="true">
+        <span class="shape shape-blue"></span>
+        <span class="shape shape-pink"></span>
+        <span class="shape shape-yellow"></span>
+        <span class="shape shape-green"></span>
+    </div>
+
+    <header class="site-header">
+        <div class="brand-block">
+            <div class="brand-heading">
+                <img
+                    src="assets/nos-na-rede-logo.png"
+                    alt="Logo do Projeto Nós na Rede"
+                    class="project-logo"
+                    width="500"
+                    height="500"
+                >
+                <div>
+                    <p class="eyebrow">Projeto Nós na Rede</p>
+                    <h1>Controle de presenças e certificação</h1>
+                    <p class="header-description">
+                        Acompanhe frequência, situação de inscrição, risco de não certificação e evolução dos encontros
+                        presenciais das turmas do projeto.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div id="loadStatus" class="update-status" aria-label="Status de atualização">
+            <i class="fa-solid fa-rotate"></i>
+            <span id="lastUpdated">Aguardando carregamento dos dados</span>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <section class="filters-card" aria-labelledby="filtersTitle">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Filtros</p>
+                    <h2 id="filtersTitle">Refine a análise</h2>
+                </div>
+                <button type="button" id="resetFilters" class="reset-button">
+                    <i class="fa-solid fa-filter-circle-xmark"></i>
+                    Limpar filtros
+                </button>
+            </div>
+
+            <div class="filters-grid">
+                <label for="filterTurma">
+                    Turma
+                    <select id="filterTurma">
+                        <option value="">Todas as turmas</option>
+                    </select>
+                </label>
+                <label for="filterMunicipio">
+                    Município
+                    <select id="filterMunicipio">
+                        <option value="">Todos os municípios</option>
+                    </select>
+                </label>
+                <label for="filterEducador">
+                    Educador(a)
+                    <select id="filterEducador">
+                        <option value="">Todos os educadores</option>
+                    </select>
+                </label>
+                <label for="filterEncontro">
+                    Encontro
+                    <select id="filterEncontro">
+                        <option value="">Todos os encontros</option>
+                    </select>
+                </label>
+                <label for="filterSituacao">
+                    Situação
+                    <select id="filterSituacao">
+                        <option value="">Todas as situações</option>
+                    </select>
+                </label>
+                <label for="filterStatusInscricao">
+                    Status de inscrição
+                    <select id="filterStatusInscricao">
+                        <option value="">Todos os status</option>
+                    </select>
+                </label>
+                <label for="filterBusca" class="search-field">
+                    Busca
+                    <input id="filterBusca" type="search" placeholder="Nome, CPF, turma ou município">
+                </label>
+            </div>
+        </section>
+
+        <section id="kpiGrid" class="kpi-grid" aria-label="Indicadores principais">
+            <article class="kpi-card">
+                <span class="kpi-icon blue"><i class="fa-solid fa-users"></i></span>
+                <p>Participantes filtrados</p>
+                <strong data-kpi="students">--</strong>
+            </article>
+            <article class="kpi-card">
+                <span class="kpi-icon green"><i class="fa-solid fa-circle-check"></i></span>
+                <p>Elegíveis à certificação</p>
+                <strong data-kpi="certified">--</strong>
+            </article>
+            <article class="kpi-card">
+                <span class="kpi-icon yellow"><i class="fa-solid fa-calendar-check"></i></span>
+                <p>Presença média</p>
+                <strong data-kpi="attendance">--</strong>
+            </article>
+            <article class="kpi-card">
+                <span class="kpi-icon red"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                <p>Em risco</p>
+                <strong data-kpi="risk">--</strong>
+            </article>
+        </section>
+
+        <section class="panel report-panel" aria-labelledby="reportSummaryTitle">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Leitura do recorte</p>
+                    <h2 id="reportSummaryTitle">Resumo interpretativo</h2>
+                </div>
+                <span class="badge">Atualizado pelos filtros</span>
+            </div>
+            <div id="reportSummary" class="report-summary">
+                <p class="empty-state">O resumo será gerado após o carregamento dos dados.</p>
+            </div>
+        </section>
+
+        <section class="panel risk-panel" aria-labelledby="riskTitle">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Atenção prioritária</p>
+                    <h2 id="riskTitle">Participantes em risco de não certificação</h2>
+                </div>
+                <div class="risk-actions" aria-label="Downloads do relatório de atenção prioritária">
+                    <span class="badge badge-red">Critério presencial</span>
+                    <button type="button" id="downloadRiskPdf" class="download-button download-button-red">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        PDF
+                    </button>
+                    <button type="button" id="downloadRiskCsv" class="download-button">
+                        <i class="fa-solid fa-file-csv"></i>
+                        CSV
+                    </button>
+                    <button type="button" id="downloadRiskXlsx" class="download-button">
+                        <i class="fa-solid fa-file-excel"></i>
+                        XLSX
+                    </button>
+                </div>
+            </div>
+            <p class="risk-report-note">
+                Os downloads consideram todos os cursistas em atenção prioritária no recorte filtrado atual
+                e incluem resumo por turma.
+            </p>
+            <p id="riskReportStatus" class="download-status" aria-live="polite"></p>
+            <div id="riskList" class="risk-list">
+                <p class="empty-state">A lista será preenchida quando os dados forem processados.</p>
+            </div>
+        </section>
+
+        <section class="charts-grid" aria-label="Gráficos do dashboard">
+            <article class="panel chart-panel">
+                <h2>Status de certificação</h2>
+                <p class="chart-description">Distribuição dos cursistas entre aptos, em acompanhamento e não aptos no recorte filtrado.</p>
+                <canvas id="statusChart"></canvas>
+            </article>
+            <article class="panel chart-panel">
+                <h2>Presença por encontro</h2>
+                <p class="chart-description">Compara presenças, faltas, dispensas e períodos sem registro em cada encontro presencial.</p>
+                <canvas id="encounterChart"></canvas>
+            </article>
+            <article class="panel chart-panel">
+                <h2>Presença por turma</h2>
+                <p class="chart-description">Mostra a situação dos cursistas em cada turma, facilitando priorização por grupo.</p>
+                <canvas id="turmaChart"></canvas>
+            </article>
+            <article class="panel chart-panel">
+                <h2>Presença por município</h2>
+                <p class="chart-description">Ajuda a comparar o acompanhamento territorial dos cursistas.</p>
+                <canvas id="municipioChart"></canvas>
+            </article>
+            <article class="panel chart-panel chart-panel-wide">
+                <h2>Presença por educador(a)</h2>
+                <p class="chart-description">Consolida o acompanhamento das turmas vinculadas a cada educador(a).</p>
+                <canvas id="educadorChart"></canvas>
+            </article>
+        </section>
+
+        <section class="panel table-panel" aria-labelledby="tableTitle">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">Base analítica</p>
+                    <h2 id="tableTitle">Participantes e presenças</h2>
+                </div>
+                <div class="table-actions" aria-label="Controles da base analítica">
+                    <label class="page-size-control" for="tablePageSize">
+                        Exibir
+                        <select id="tablePageSize">
+                            <option value="10" selected>10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                            <option value="all">Todos</option>
+                        </select>
+                    </label>
+                    <span class="badge">Tabela filtrável</span>
+                    <button type="button" id="downloadTablePdf" class="download-button download-button-red">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        PDF
+                    </button>
+                    <button type="button" id="downloadTableCsv" class="download-button">
+                        <i class="fa-solid fa-file-csv"></i>
+                        CSV
+                    </button>
+                    <button type="button" id="downloadTableXlsx" class="download-button">
+                        <i class="fa-solid fa-file-excel"></i>
+                        XLSX
+                    </button>
+                </div>
+            </div>
+            <p class="table-report-note">
+                Os downloads da base analítica consideram todos os participantes do recorte filtrado atual.
+            </p>
+            <p id="tableDisplayStatus" class="table-display-status" aria-live="polite"></p>
+            <p id="tableReportStatus" class="download-status" aria-live="polite"></p>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Turma</th>
+                            <th>Município</th>
+                            <th>Educador(a)</th>
+                            <th>Presenças</th>
+                            <th>Faltas</th>
+                            <th>Dispensas</th>
+                            <th>Válidos</th>
+                            <th>% frequência</th>
+                            <th>Situação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTable">
+                        <tr>
+                            <td colspan="10">Os dados dos participantes serão exibidos aqui.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand-section">
+                <img
+                    src="assets/nos-na-rede-logo.png"
+                    alt="Logo do Projeto Nós na Rede"
+                    class="footer-logo"
+                    width="120"
+                    height="45"
+                    loading="lazy"
+                >
+                <div class="footer-text">
+                    <p class="footer-brand">Projeto Nós na Rede</p>
+                    <p>
+                        Dashboard institucional para acompanhamento de presenças e certificação.
+                        O critério presencial considera a frequência registrada nos encontros do projeto.
+                    </p>
+                </div>
+            </div>
+            <div class="footer-institutional">
+                <img
+                    src="https://brasilia.fiocruz.br/nosnarede/wp-content/uploads/sites/10/2025/10/regua-assinatura-fio-brasilia.png"
+                    alt="Logos institucionais: Governo Federal, Ministério da Saúde, Fiocruz Brasília"
+                    class="footer-institutional-logos"
+                    loading="lazy"
+                >
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="src/main.js"></script>
+</body>
+</html>
