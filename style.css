@@ -616,17 +616,15 @@ select {
 
 .charts-grid {
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: clamp(0.85rem, 1.3vw, 1.25rem);
 }
 
-.col-4 { grid-column: span 4; }
-.col-6 { grid-column: span 6; }
-.col-8 { grid-column: span 8; }
-.col-12 { grid-column: span 12; }
+.span-2 { grid-column: span 2; }
 
 @media (max-width: 1024px) {
-    .col-4, .col-6, .col-8 { grid-column: span 12; }
+    .span-2 { grid-column: span 3; }
+    .charts-grid > * { grid-column: span 3; }
 }
 
 .chart-panel {
@@ -637,7 +635,8 @@ select {
 .chart-panel canvas {
     width: 100%;
     flex: 1 1 auto;
-    min-height: 18rem;
+    min-height: 15rem;
+    max-height: 18rem;
     margin-top: 0.8rem;
 }
 
