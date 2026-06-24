@@ -292,6 +292,11 @@ export function renderStudentTable(students = [], pageSize = readTablePageSize()
     const faltasBadge = student.faltas > 0 
         ? `<span class="risk-badge">${formatNumber(student.faltas)}</span>` 
         : `<strong>0</strong>`;
+        
+    let icon = '';
+    if (student.situacao === CERTIFICATION_STATUS.apto) icon = '<i class="fa-solid fa-circle-check"></i>';
+    else if (student.situacao === CERTIFICATION_STATUS.naoApto) icon = '<i class="fa-solid fa-triangle-exclamation"></i>';
+    else icon = '<i class="fa-solid fa-clock"></i>';
     
     return `
     <tr>
@@ -304,7 +309,7 @@ export function renderStudentTable(students = [], pageSize = readTablePageSize()
       <td>${formatNumber(student.dispensas)}</td>
       <td><strong>${formatNumber(student.periodosValidos)}</strong></td>
       <td><strong>${formatPercent(student.percentualFrequencia)}</strong></td>
-      <td><span class="status-badge ${statusClass(student.situacao)}">${escapeHtml(student.situacao)}</span></td>
+      <td><span class="status-badge ${statusClass(student.situacao)}">${icon} <strong>${escapeHtml(student.situacao)}</strong></span></td>
     </tr>
   `}).join('');
 

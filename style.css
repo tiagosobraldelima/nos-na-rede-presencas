@@ -657,7 +657,7 @@ tbody tr:hover {
 
 th,
 td {
-    padding: 0.72rem 0.58rem;
+    padding: 1.15rem 0.75rem;
     text-align: left;
     border-bottom: 1px solid rgba(23, 32, 51, 0.08);
     vertical-align: middle;
@@ -827,14 +827,15 @@ tbody tr:last-child td {
 .status-badge {
     display: inline-flex;
     align-items: center;
-    max-width: 100%;
-    padding: 0.28rem 0.52rem;
-    border-radius: 999px;
-    font-weight: 800;
-    font-size: 0.7rem;
-    line-height: 1.18;
+    gap: 0.35rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.82rem;
+    line-height: 1.4;
     white-space: normal;
 }
+.status-badge strong { font-weight: 700; }
 
 .status-ok {
     color: #315f16;
