@@ -149,6 +149,33 @@ select {
     border-radius: 999px;
     font-weight: 700;
     font-size: 0.9rem;
+    transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+
+.update-status.is-loading {
+    color: #0f5d7c;
+    background: rgba(51, 166, 217, 0.12);
+    border-color: rgba(51, 166, 217, 0.24);
+}
+
+.update-status.is-loading i {
+    animation: spin 1.2s linear infinite;
+}
+
+.update-status.is-ok {
+    color: #27ae60;
+    background: rgba(120, 189, 67, 0.12);
+    border-color: rgba(120, 189, 67, 0.24);
+}
+
+.update-status.is-error {
+    color: #c0392b;
+    background: rgba(233, 75, 60, 0.12);
+    border-color: rgba(233, 75, 60, 0.24);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 .brand-heading {
@@ -265,10 +292,17 @@ select {
     box-shadow: 0 12px 24px rgba(47, 128, 193, 0.24);
     cursor: pointer;
     font-weight: 800;
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1), filter 200ms ease;
 }
 
 .reset-button:hover {
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 32px rgba(47, 128, 193, 0.32);
+    filter: brightness(1.05);
+}
+
+.reset-button:active {
+    transform: translateY(0);
 }
 
 .kpi-grid {
@@ -283,6 +317,13 @@ select {
     border-radius: var(--radius-lg);
     position: relative;
     overflow: hidden;
+    transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 250ms cubic-bezier(0.16, 1, 0.3, 1), border-color 250ms ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-soft);
+    border-color: rgba(51, 166, 217, 0.3);
 }
 
 .kpi-card::after {
@@ -292,8 +333,13 @@ select {
     height: 6rem;
     right: -2rem;
     bottom: -2.4rem;
-    background: rgba(47, 128, 193, 0.1);
+    background: rgba(47, 128, 193, 0.06);
     border-radius: 999px;
+    transition: transform 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.kpi-card:hover::after {
+    transform: scale(1.2);
 }
 
 .kpi-card p {
@@ -316,14 +362,20 @@ select {
     color: #ffffff;
     border-radius: 18px;
     font-size: 1.2rem;
+    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.kpi-icon.blue { background: var(--color-blue); }
-.kpi-icon.cyan { background: var(--color-cyan); }
-.kpi-icon.pink { background: var(--color-pink); }
-.kpi-icon.green { background: var(--color-green); }
-.kpi-icon.yellow { background: var(--color-yellow); color: #553f00; }
-.kpi-icon.red { background: var(--color-red); }
+.kpi-card:hover .kpi-icon {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.kpi-icon.blue { background: linear-gradient(135deg, var(--color-blue), #5dade2); }
+.kpi-icon.cyan { background: linear-gradient(135deg, var(--color-cyan), #76d7c4); }
+.kpi-icon.pink { background: linear-gradient(135deg, var(--color-pink), #f194b8); }
+.kpi-icon.green { background: linear-gradient(135deg, var(--color-green), #a3e4d7); }
+.kpi-icon.yellow { background: linear-gradient(135deg, var(--color-yellow), #f9e79f); color: #553f00; }
+.kpi-icon.red { background: linear-gradient(135deg, var(--color-red), #f1948a); }
 
 .panel {
     padding: clamp(1rem, 1.65vw, 1.45rem);
@@ -375,7 +427,51 @@ select {
 
 .risk-list {
     display: grid;
-    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 0.85rem;
+}
+
+.risk-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: rgba(255, 255, 255, 0.74);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1), border-color 200ms ease, background 200ms ease;
+}
+
+.risk-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card);
+    border-color: rgba(233, 75, 60, 0.25);
+    background: rgba(255, 255, 255, 0.94);
+}
+
+.risk-item div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.risk-item strong {
+    font-family: "Outfit", "Inter", sans-serif;
+    color: var(--color-ink);
+    font-size: 1rem;
+}
+
+.risk-item p {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--color-muted);
+}
+
+.risk-item small {
+    font-size: 0.8rem;
+    color: var(--color-red);
+    font-weight: 600;
 }
 
 .risk-actions,
@@ -522,6 +618,12 @@ select {
     background: var(--color-surface-strong);
     scrollbar-color: rgba(47, 128, 193, 0.45) rgba(47, 128, 193, 0.08);
     scrollbar-width: thin;
+    transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.table-wrap:focus-within {
+    border-color: var(--color-cyan);
+    box-shadow: 0 0 0 4px rgba(51, 166, 217, 0.16);
 }
 
 .table-wrap::-webkit-scrollbar {
@@ -543,6 +645,14 @@ table {
     min-width: 0;
     border-collapse: collapse;
     table-layout: fixed;
+}
+
+tbody tr {
+    transition: background-color 150ms ease;
+}
+
+tbody tr:hover {
+    background-color: rgba(51, 166, 217, 0.04);
 }
 
 th,
@@ -692,6 +802,20 @@ tbody tr:last-child td {
 
 .footer-brand + p {
     margin-top: 0.35rem;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.25rem;
+}
+
+.footer-institutional-logos {
+    max-width: 320px;
+    width: 100%;
+    height: auto;
 }
 
 @media (min-width: 1500px) {
