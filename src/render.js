@@ -240,17 +240,24 @@ export function renderRiskList(students = []) {
     return;
   }
 
-  target.innerHTML = sortedRisk.map((student) => `
+  target.innerHTML = sortedRisk.map((student) => {
+    let obsText = escapeHtml(student.observacao);
+    let obsHtml = `<span class="risk-obs"><i class="fa-solid fa-circle-exclamation"></i> ${obsText}</span>`;
+    if (obsText.includes('Não apto:')) {
+      obsHtml = `<span class="risk-obs danger"><i class="fa-solid fa-triangle-exclamation"></i> <strong>Não apto:</strong> ${obsText.replace('Não apto:', '').trim()}</span>`;
+    }
+
+    return `
     <tr>
-      <td>${escapeHtml(student.nome)}</td>
-      <td>${escapeHtml(student.turma)}</td>
-      <td>${escapeHtml(student.municipio)}</td>
-      <td>${escapeHtml(student.educador)}</td>
-      <td>${formatNumber(student.periodosValidos)}</td>
-      <td>${formatNumber(student.faltas)}</td>
-      <td>${escapeHtml(student.observacao)}</td>
+      <td class="col-nome"><strong>${escapeHtml(student.nome)}</strong></td>
+      <td class="col-meta">${escapeHtml(student.turma)}</td>
+      <td class="col-meta">${escapeHtml(student.municipio)}</td>
+      <td class="col-meta">${escapeHtml(student.educador)}</td>
+      <td><strong>${formatNumber(student.periodosValidos)}</strong></td>
+      <td><span class="risk-badge">${formatNumber(student.faltas)}</span></td>
+      <td>${obsHtml}</td>
     </tr>
-  `).join('');
+  `}).join('');
   
   updateSortHeaders('risk', currentSortRisk.col, currentSortRisk.asc);
 }
@@ -283,10 +290,10 @@ export function renderStudentTable(students = [], pageSize = readTablePageSize()
 
   target.innerHTML = visibleStudents.map((student) => `
     <tr>
-      <td>${escapeHtml(student.nome)}</td>
-      <td>${escapeHtml(student.turma)}</td>
-      <td>${escapeHtml(student.municipio)}</td>
-      <td>${escapeHtml(student.educador)}</td>
+      <td class="col-nome"><strong>${escapeHtml(student.nome)}</strong></td>
+      <td class="col-meta">${escapeHtml(student.turma)}</td>
+      <td class="col-meta">${escapeHtml(student.municipio)}</td>
+      <td class="col-meta">${escapeHtml(student.educador)}</td>
       <td>${formatNumber(student.presencas)}</td>
       <td>${formatNumber(student.faltas)}</td>
       <td>${formatNumber(student.dispensas)}</td>
