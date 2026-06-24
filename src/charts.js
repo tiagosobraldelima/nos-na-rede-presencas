@@ -45,6 +45,11 @@ function renderHorizontalStatusChart(Chart, id, items) {
   const context = canvasContext(id);
   if (!context) return;
 
+  const canvas = context.canvas ?? context;
+  const minRequiredHeight = items.length * 40 + 80;
+  canvas.style.minHeight = `${Math.max(280, minRequiredHeight)}px`;
+  canvas.style.maxHeight = 'none';
+
   charts[id] = new Chart(context, {
     type: 'bar',
     data: {
