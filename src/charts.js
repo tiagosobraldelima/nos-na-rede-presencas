@@ -114,6 +114,16 @@ export function renderCharts(model) {
       data: {
         labels: encounters.map((item) => item.encontro),
         datasets: [
+          {
+            type: 'line',
+            label: 'Tendência de Válidos',
+            data: encounters.map((item) => item.presencas + item.dispensas),
+            borderColor: COLORS.blue,
+            backgroundColor: COLORS.blue,
+            borderWidth: 3,
+            tension: 0.35,
+            fill: false
+          },
           { label: 'Presenças', data: encounters.map((item) => item.presencas), backgroundColor: COLORS.green },
           { label: 'Faltas', data: encounters.map((item) => item.faltas), backgroundColor: COLORS.red },
           { label: 'Dispensas', data: encounters.map((item) => item.dispensas), backgroundColor: COLORS.yellow },

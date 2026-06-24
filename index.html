@@ -83,12 +83,6 @@
                         <option value="">Todos os educadores</option>
                     </select>
                 </label>
-                <label for="filterEncontro">
-                    Encontro
-                    <select id="filterEncontro">
-                        <option value="">Todos os encontros</option>
-                    </select>
-                </label>
                 <label for="filterSituacao">
                     Situação
                     <select id="filterSituacao">
@@ -100,10 +94,6 @@
                     <select id="filterStatusInscricao">
                         <option value="">Todos os status</option>
                     </select>
-                </label>
-                <label for="filterBusca" class="search-field">
-                    Busca
-                    <input id="filterBusca" type="search" placeholder="Nome, CPF, turma ou município">
                 </label>
             </div>
         </section>
@@ -194,15 +184,15 @@
         </section>
 
         <section class="charts-grid" aria-label="Gráficos do dashboard">
+            <article class="panel chart-panel chart-panel-wide">
+                <h2>Presença por encontro</h2>
+                <p class="chart-description">Evolução do engajamento (presenças, faltas e dispensas) ao longo dos encontros presenciais.</p>
+                <canvas id="encounterChart"></canvas>
+            </article>
             <article class="panel chart-panel">
                 <h2>Status de certificação</h2>
                 <p class="chart-description">Distribuição dos cursistas entre aptos, em acompanhamento e não aptos no recorte filtrado.</p>
                 <canvas id="statusChart"></canvas>
-            </article>
-            <article class="panel chart-panel">
-                <h2>Presença por encontro</h2>
-                <p class="chart-description">Compara presenças, faltas, dispensas e períodos sem registro em cada encontro presencial.</p>
-                <canvas id="encounterChart"></canvas>
             </article>
             <article class="panel chart-panel">
                 <h2>Presença por turma</h2>
@@ -214,7 +204,7 @@
                 <p class="chart-description">Ajuda a comparar o acompanhamento territorial dos cursistas.</p>
                 <canvas id="municipioChart"></canvas>
             </article>
-            <article class="panel chart-panel chart-panel-wide">
+            <article class="panel chart-panel">
                 <h2>Presença por educador(a)</h2>
                 <p class="chart-description">Consolida o acompanhamento das turmas vinculadas a cada educador(a).</p>
                 <canvas id="educadorChart"></canvas>
@@ -228,6 +218,10 @@
                     <h2 id="tableTitle">Participantes e presenças</h2>
                 </div>
                 <div class="table-actions" aria-label="Controles da base analítica">
+                    <label class="table-search" for="filterBusca">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input id="filterBusca" type="search" placeholder="Buscar cursista, turma...">
+                    </label>
                     <label class="page-size-control" for="tablePageSize">
                         Exibir
                         <select id="tablePageSize">

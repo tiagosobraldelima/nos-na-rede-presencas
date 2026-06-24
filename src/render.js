@@ -4,7 +4,6 @@ const FILTER_IDS = {
   turma: 'filterTurma',
   municipio: 'filterMunicipio',
   educador: 'filterEducador',
-  encontro: 'filterEncontro',
   situacao: 'filterSituacao',
   statusInscricao: 'filterStatusInscricao',
   busca: 'filterBusca'
@@ -142,11 +141,6 @@ export function populateFilters(model, currentFilters = {}) {
     currentFilters.turma
   );
   setSelectOptions(FILTER_IDS.municipio, model.options?.municipios ?? [], currentFilters.municipio);
-  setSelectOptions(
-    FILTER_IDS.encontro,
-    Array.from({ length: TOTAL_ENCOUNTERS }, (_, index) => `${index + 1}º encontro`),
-    currentFilters.encontro
-  );
   setSelectOptions(FILTER_IDS.situacao, Object.values(CERTIFICATION_STATUS), currentFilters.situacao);
   setSelectOptions(
     FILTER_IDS.statusInscricao,

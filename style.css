@@ -483,6 +483,30 @@ select {
     align-items: center;
 }
 
+.table-search {
+    flex: 1 1 200px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-right: auto;
+    font-size: 0.9rem;
+    color: var(--color-muted);
+    background: rgba(23, 32, 51, 0.03);
+    border: 1px solid rgba(23, 32, 51, 0.1);
+    border-radius: 6px;
+    padding: 0.4rem 0.6rem;
+}
+
+.table-search input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    color: var(--color-ink);
+    font-size: 0.85rem;
+    outline: none;
+}
+
 .table-actions {
     flex: 1 1 32rem;
     max-width: 100%;

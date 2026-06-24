@@ -281,21 +281,8 @@ export function buildAttendanceModel(rows) {
   };
 }
 
-function hasEncounterLaunch(student, encontro) {
-  if (!encontro) return true;
-  if (Object.prototype.hasOwnProperty.call(student.encontros, String(encontro))) return true;
-  if (encontro !== 1) return false;
-
-  return student.periods.some((period) => (
-    period.encontro === 1 && period.type === 'dispensaAutomatica'
-  ));
-}
-
 export function applyFilters(model, filters) {
   const busca = normalizeValue(filters.busca || '');
-  const encontro = filters.encontro && filters.encontro !== 'Todos'
-    ? encounterNumber(filters.encontro)
-    : 0;
   const students = model.students.filter((student) => {
     const searchableContent = [
       student.nome,
@@ -308,7 +295,6 @@ export function applyFilters(model, filters) {
     const matchesBusca = !busca || normalizeValue(searchableContent).includes(busca);
 
     return matchesBusca
-      && hasEncounterLaunch(student, encontro)
       && (!filters.turma || filters.turma === 'Todos' || student.turma === filters.turma)
       && (!filters.municipio || filters.municipio === 'Todos' || student.municipio === filters.municipio)
       && (!filters.educador || filters.educador === 'Todos' || student.educador === filters.educador)
